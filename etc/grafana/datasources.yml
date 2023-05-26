@@ -1,0 +1,89 @@
+# config file version
+apiVersion: 1
+
+# list of datasources that should be deleted from the database
+deleteDatasources:
+    - name: Prometheus
+      orgId: 1
+
+# list of datasources to insert/update depending
+# what's available in the database
+datasources:
+    # PORTAL
+
+    - uid: portal_prometheus
+      name: portal_prometheus
+      type: prometheus
+      orgId: 1
+      access: proxy
+      url: http://${ROOT_URL}:${PORTAL_PROMETHEUS_PORT}
+      isDefault: true
+      editable: false
+    - uid: portal_loki
+      name: portal_loki
+      type: loki
+      typeName: Loki
+      orgId: 1
+      access: proxy
+      url: http://${ROOT_URL}:${PORTAL_LOKI_PORT}
+      editable: false
+
+    #DATASTORE
+
+    - uid: datastore_tempo
+      name: datastore_tempo
+      type: tempo
+      typeName: Tempo
+      orgId: 1
+      access: proxy
+      url: http://${ROOT_URL}:${DATASTORE_TEMPO_PORT}
+      jsonData:
+          nodeGraph:
+              enabled: true
+          search:
+              hide: false
+          lokiSearch:
+              datasourceUid: loki
+          tracesToLogs:
+              datasourceUid: loki
+              filterBySpanID: false
+              filterByTraceID: true
+              mapTagNamesEnabled: false
+              tags:
+                  - compose_service
+      readOnly: false
+      editable: true
+    - uid: datastore_prometheus
+      name: datastore_prometheus
+      type: prometheus
+      orgId: 1
+      access: proxy
+      url: http://${ROOT_URL}:${DATASTORE_PROMETHEUS_PORT}
+      editable: false
+      jsonData:
+          exemplarTraceIdDestinations:
+              - datasourceUid: tempo
+                name: TraceID
+          httpMethod: POST
+    - uid: datastore_loki
+      name: datastore_loki
+      type: loki
+      typeName: Loki
+      orgId: 1
+      access: proxy
+      url: http://${ROOT_URL}:${DATASTORE_LOKI_PORT}
+      editable: false
+      jsonData:
+          derivedFields:
+              - datasourceUid: tempo
+                matcherRegex: (?:trace_id)=(\w+)
+                name: TraceID
+                url: $${__value.raw}
+    # TEST
+    - uid: datastore_performance_test
+      name: datastore_performance_test
+      orgId: 1
+      type: influxdb
+      access: proxy
+      database: k6
+      url: http://${ROOT_URL}:${DATASTORE_TEST_INFLUXDB_PORT}

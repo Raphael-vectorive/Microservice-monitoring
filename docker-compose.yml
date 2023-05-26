@@ -1,0 +1,32 @@
+version: "3.9"
+
+networks:
+    bridge:
+        ipam:
+            config:
+                - subnet: 172.32.6.1/24
+
+services:
+
+    grafana:
+        image: grafana/grafana:9.5.2
+        ports:
+            - "3261:3000"
+        networks:
+            - bridge
+        volumes:
+            - ./etc/grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+            - ./etc/grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml
+            - ./etc/dashboards:/etc/grafana/dashboards
+        depends_on:
+            - prometheus
+        environment:
+            - ROOT_URL=${ROOT_URL}
+            - GF_SECURITY_ADMIN_USER=${MONITORING_GRAFANA_USER}
+            - GF_SECURITY_ADMIN_PASSWORD=${MONITORING_GRAFANA_PASSWORD}
+            - PORTAL_PROMETHEUS_PORT=${PORTAL_PROMETHEUS_PORT}
+            - PORTAL_LOKI_PORT=${PORTAL_LOKI_PORT}
+            - DATASTORE_TEMPO_PORT=${DATASTORE_TEMPO_PORT}
+            - DATASTORE_PROMETHEUS_PORT=${DATASTORE_PROMETHEUS_PORT}
+            - DATASTORE_LOKI_PORT=${DATASTORE_LOKI_PORT}
+            - DATASTORE_TEST_INFLUXDB_PORT=${DATASTORE_TEST_INFLUXDB_PORT}
