@@ -16,17 +16,16 @@ datasources:
       type: prometheus
       orgId: 1
       access: proxy
-      url: http://${ROOT_URL}:${PORTAL_PROMETHEUS_PORT}
-      isDefault: true
       editable: false
+      url: http://${ROOT_URL}:${PORTAL_PROMETHEUS_PORT}
     - uid: portal_loki
       name: portal_loki
       type: loki
       typeName: Loki
       orgId: 1
       access: proxy
-      url: http://${ROOT_URL}:${PORTAL_LOKI_PORT}
       editable: false
+      url: http://${ROOT_URL}:${PORTAL_LOKI_PORT}
 
     #DATASTORE
 
@@ -37,22 +36,21 @@ datasources:
       orgId: 1
       access: proxy
       url: http://${ROOT_URL}:${DATASTORE_TEMPO_PORT}
+      editable: false
       jsonData:
           nodeGraph:
               enabled: true
           search:
               hide: false
           lokiSearch:
-              datasourceUid: loki
+              datasourceUid: portal_loki
           tracesToLogs:
-              datasourceUid: loki
+              datasourceUid: portal_loki
               filterBySpanID: false
               filterByTraceID: true
               mapTagNamesEnabled: false
               tags:
                   - compose_service
-      readOnly: false
-      editable: true
     - uid: datastore_prometheus
       name: datastore_prometheus
       type: prometheus
@@ -62,7 +60,7 @@ datasources:
       editable: false
       jsonData:
           exemplarTraceIdDestinations:
-              - datasourceUid: tempo
+              - datasourceUid: portal_tempo
                 name: TraceID
           httpMethod: POST
     - uid: datastore_loki
@@ -75,7 +73,7 @@ datasources:
       editable: false
       jsonData:
           derivedFields:
-              - datasourceUid: tempo
+              - datasourceUid: portal_tempo
                 matcherRegex: (?:trace_id)=(\w+)
                 name: TraceID
                 url: $${__value.raw}
