@@ -1033,7 +1033,7 @@
         {
             "datasource": {
                 "type": "loki",
-                "uid": "portal_loki"
+                "uid": "datastore_loki"
             },
             "fieldConfig": {
                 "defaults": {
@@ -1157,10 +1157,10 @@
                 {
                     "datasource": {
                         "type": "loki",
-                        "uid": "portal_loki"
+                        "uid": "datastore_loki"
                     },
                     "editorMode": "code",
-                    "expr": "sum by(type) (rate({compose_service=~\"api\"} != `Started server process` != `Application startup complete` != `Waiting for application startup.` != `Uvicorn running on http://0.0.0.0:3251 (Press CTRL+C to quit)` != `Started parent process` | pattern `<date> <time> <type> <logger> <code> [<_>=<trace_id> <_>=<span_id> <_>=<service_name>] - <msg>` | msg != `` |= \"$log_keyword\" [1m]))",
+                    "expr": "sum by(type) (rate({compose_service=~\"api\"} != `Started server process` != `Application startup complete` != `Waiting for application startup.` != `Uvicorn running on http://0.0.0.0:3251 (Press CTRL+C to quit)` != `Started parent process` | pattern `<date> <time> <type> <logger> <code> [<_>=<trace_id> <_>=<span_id> <_>=<service_name>] - <msg>` | msg != `` [1m]))",
                     "legendFormat": "{{type}}",
                     "queryType": "range",
                     "refId": "A"
@@ -1172,7 +1172,7 @@
         {
             "datasource": {
                 "type": "loki",
-                "uid": "portal_loki"
+                "uid": "datastore_loki"
             },
             "gridPos": {
                 "h": 9,
@@ -1196,10 +1196,10 @@
                 {
                     "datasource": {
                         "type": "loki",
-                        "uid": "portal_loki"
+                        "uid": "datastore_loki"
                     },
                     "editorMode": "code",
-                    "expr": "{compose_service=~\"api*\"} != `Started server process` != `Application startup complete` != `Waiting for application startup.` != `Uvicorn running on http://0.0.0.0:3251 (Press CTRL+C to quit)` != `Started parent process`| pattern `<date> <time>,<ms> <levelname> [<name>] [<filename>:<lineno>] [trace_id=<otelTraceID> span_id=<otelSpanID> resource.service.name=<otelServiceName>] - <message>` | message!= `` | line_format \"## {{.time}}\\t{{.levelname}}\\n{{.message}} {{.code}}\" |= \"$log_keyword\"",
+                    "expr": "{compose_service=~\"api*\"} != `Started server process` != `Application startup complete` != `Waiting for application startup.` != `Uvicorn running on http://0.0.0.0:3251 (Press CTRL+C to quit)` != `Started parent process`| pattern `<date> <time>,<ms> <levelname> [<name>] [<filename>:<lineno>] [trace_id=<otelTraceID> span_id=<otelSpanID> resource.service.name=<otelServiceName>] - <message>` | message!= `` | line_format \"## {{.time}}\\t{{.levelname}}\\n{{.message}} {{.code}}\" ",
                     "hide": false,
                     "queryType": "range",
                     "refId": "A"
@@ -1211,7 +1211,7 @@
         {
             "datasource": {
                 "type": "loki",
-                "uid": "portal_loki"
+                "uid": "datastore_loki"
             },
             "fieldConfig": {
                 "defaults": {
@@ -1335,10 +1335,10 @@
                 {
                     "datasource": {
                         "type": "loki",
-                        "uid": "portal_loki"
+                        "uid": "datastore_loki"
                     },
                     "editorMode": "code",
-                    "expr": "sum by(log_level) (rate({compose_service=~\"worker\"} != `Refusing to deserialize disabled content of type pickle (application/x-python-serialize)` != `Connected to redis` != `mingle: ` !~ `celery@*. ready` | pattern `[<date> <time>: <log_level>/<process>] <task> <function_name>[<task_id>] <msg>` | msg != `` |= \"$log_keyword\" [1m]))",
+                    "expr": "sum by(log_level) (rate({compose_service=~\"worker\"} != `Refusing to deserialize disabled content of type pickle (application/x-python-serialize)` != `Connected to redis` != `mingle: ` !~ `celery@*. ready` | pattern `[<date> <time>: <log_level>/<process>] <task> <function_name>[<task_id>] <msg>` | msg != `` [1m]))",
                     "legendFormat": "{{type}}",
                     "queryType": "range",
                     "refId": "A"
@@ -1350,7 +1350,7 @@
         {
             "datasource": {
                 "type": "loki",
-                "uid": "portal_loki"
+                "uid": "datastore_loki"
             },
             "gridPos": {
                 "h": 9,
@@ -1374,7 +1374,7 @@
                 {
                     "datasource": {
                         "type": "loki",
-                        "uid": "portal_loki"
+                        "uid": "datastore_loki"
                     },
                     "editorMode": "code",
                     "expr": "{compose_service=~\"worker\"} != `Refusing to deserialize disabled content of type pickle (application/x-python-serialize)` != `Connected to redis` != `mingle: ` !~ `celery@*. ready` | pattern `[<date> <time>,<ms>: <log_level>/<process>] <task> <function_name>[<task_id>] <msg>` | msg != `` | line_format \"## {{.time}}\\t {{.log_level}}\\t {{.function_name}} :\\n{{.msg}}\"",

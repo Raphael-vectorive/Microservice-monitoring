@@ -799,6 +799,185 @@
             ],
             "title": "Current Task Count",
             "type": "stat"
+        },
+        {
+            "datasource": {
+                "type": "loki",
+                "uid": "datastore_loki"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "drawStyle": "bars",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "normal"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    }
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "ERROR"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "red",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "INFO"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "green",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "CRITICAL"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "purple",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 9,
+                "w": 6,
+                "x": 0,
+                "y": 44
+            },
+            "id": 24,
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "pluginVersion": "8.4.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "loki",
+                        "uid": "datastore_loki"
+                    },
+                    "editorMode": "code",
+                    "expr": "sum by(log_level) (rate({compose_service=~\"worker\"} != `Refusing to deserialize disabled content of type pickle (application/x-python-serialize)` != `Connected to redis` != `mingle: ` !~ `celery@*. ready` | pattern `[<date> <time>: <log_level>/<process>] <task> <function_name>[<task_id>] <msg>` | msg != `` [1m]))",
+                    "legendFormat": "{{type}}",
+                    "queryType": "range",
+                    "refId": "A"
+                }
+            ],
+            "title": "Worker Log Type Rate",
+            "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "loki",
+                "uid": "datastore_loki"
+            },
+            "gridPos": {
+                "h": 9,
+                "w": 18,
+                "x": 6,
+                "y": 44
+            },
+            "id": 23,
+            "options": {
+                "dedupStrategy": "none",
+                "enableLogDetails": true,
+                "prettifyLogMessage": false,
+                "showCommonLabels": false,
+                "showLabels": false,
+                "showTime": false,
+                "sortOrder": "Ascending",
+                "wrapLogMessage": true
+            },
+            "pluginVersion": "8.4.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "loki",
+                        "uid": "datastore_loki"
+                    },
+                    "editorMode": "code",
+                    "expr": "{compose_service=~\"worker\"} != `Refusing to deserialize disabled content of type pickle (application/x-python-serialize)` != `Connected to redis` != `mingle: ` !~ `celery@*. ready` | pattern `[<date> <time>,<ms>: <log_level>/<process>] <task> <function_name>[<task_id>] <msg>` | msg != `` | line_format \"## {{.time}}\\t {{.log_level}}\\t {{.function_name}} :\\n{{.msg}}\"",
+                    "hide": false,
+                    "queryType": "range",
+                    "refId": "A"
+                }
+            ],
+            "title": "WORKER",
+            "transformations": [],
+            "type": "logs"
         }
     ],
     "refresh": "10s",
